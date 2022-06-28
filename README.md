@@ -5,5 +5,5 @@
 * [java并发](notes/java并发.md)
 
 ### 数据库
-* [sqlite](notes/sqlite.md)
+* [Sqlite](notes/sqlite.md)
 
