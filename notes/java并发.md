@@ -1,86 +1,92 @@
 # Java 并发
+
 <!-- GFM-TOC -->
-   * [并发简介](#并发简介)
-        * [多核处理器的发展](#多核处理器的发展)
-        * [进程、线程](#进程、线程)
-        * [线程优点](#线程优点)
-        * [线程风险](#线程风险)
-   * [一、使用线程](#一使用线程)
-       * [实现 Runnable 接口](#实现-runnable-接口)
-       * [实现 Callable 接口](#实现-callable-接口)
-       * [继承 Thread 类](#继承-thread-类)
-       * [实现接口 VS 继承 Thread](#实现接口-vs-继承-thread)
-   * [二、基础线程机制](#二基础线程机制)
-       * [Executor](#executor)
-       * [Daemon](#daemon)
-       * [sleep()](#sleep)
-       * [yield()](#yield)
-   * [三、中断](#三中断)
-       * [InterruptedException](#interruptedexception)
-       * [interrupted()](#interrupted)
-       * [Executor 的中断操作](#executor-的中断操作)
-   * [四、互斥同步](#四互斥同步)
-       * [synchronized](#synchronized)
-       * [ReentrantLock](#reentrantlock)
-       * [比较](#比较)
-       * [使用选择](#使用选择)
-   * [五、线程之间的协作](#五线程之间的协作)
-       * [join()](#join)
-       * [wait() notify() notifyAll()](#wait-notify-notifyall)
-       * [await() signal() signalAll()](#await-signal-signalall)
-   * [六、线程状态](#六线程状态)
-       * [新建（NEW）](#新建new)
-       * [可运行（RUNABLE）](#可运行runable)
-       * [阻塞（BLOCKED）](#阻塞blocked)
-       * [无限期等待（WAITING）](#无限期等待waiting)
-       * [限期等待（TIMED_WAITING）](#限期等待timed_waiting)
-       * [死亡（TERMINATED）](#死亡terminated)
-   * [七、J.U.C - AQS](#七juc---aqs)
-       * [CountDownLatch](#countdownlatch)
-       * [CyclicBarrier](#cyclicbarrier)
-       * [Semaphore](#semaphore)
-   * [八、J.U.C - 其它组件](#八juc---其它组件)
-       * [FutureTask](#futuretask)
-       * [BlockingQueue](#blockingqueue)
-       * [ForkJoin](#forkjoin)
-   * [九、线程不安全示例](#九线程不安全示例)
-   * [十、Java 内存模型](#十java-内存模型)
-       * [主内存与工作内存](#主内存与工作内存)
-       * [内存间交互操作](#内存间交互操作)
-       * [内存模型三大特性](#内存模型三大特性)
-       * [先行发生原则](#先行发生原则)
-   * [十一、线程安全](#十一线程安全)
-       * [不可变](#不可变)
-       * [互斥同步](#互斥同步)
-       * [非阻塞同步](#非阻塞同步)
-       * [无同步方案](#无同步方案)
-   * [十二、锁优化](#十二锁优化)
-       * [自旋锁](#自旋锁)
-       * [锁消除](#锁消除)
-       * [锁粗化](#锁粗化)
-       * [轻量级锁](#轻量级锁)
-       * [偏向锁](#偏向锁)
+
+* [并发简介](#并发简介)
+  * [多核处理器的发展](#多核处理器的发展)
+  * [进程、线程](#进程、线程)
+  * [线程优点](#线程优点)
+  * [线程风险](#线程风险)
+* [一、使用线程](#一使用线程)
+  * [实现 Runnable 接口](#实现-runnable-接口)
+  * [实现 Callable 接口](#实现-callable-接口)
+  * [继承 Thread 类](#继承-thread-类)
+  * [实现接口 VS 继承 Thread](#实现接口-vs-继承-thread)
+* [二、基础线程机制](#二基础线程机制)
+  * [Executor](#executor)
+  * [Daemon](#daemon)
+  * [sleep()](#sleep)
+  * [yield()](#yield)
+* [三、中断](#三中断)
+  * [InterruptedException](#interruptedexception)
+  * [interrupted()](#interrupted)
+  * [Executor 的中断操作](#executor-的中断操作)
+* [四、互斥同步](#四互斥同步)
+  * [synchronized](#synchronized)
+  * [ReentrantLock](#reentrantlock)
+  * [比较](#比较)
+  * [使用选择](#使用选择)
+* [五、线程之间的协作](#五线程之间的协作)
+  * [join()](#join)
+  * [wait() notify() notifyAll()](#wait-notify-notifyall)
+  * [await() signal() signalAll()](#await-signal-signalall)
+* [六、线程状态](#六线程状态)
+  * [新建（NEW）](#新建new)
+  * [可运行（RUNABLE）](#可运行runable)
+  * [阻塞（BLOCKED）](#阻塞blocked)
+  * [无限期等待（WAITING）](#无限期等待waiting)
+  * [限期等待（TIMED_WAITING）](#限期等待timed_waiting)
+  * [死亡（TERMINATED）](#死亡terminated)
+* [七、J.U.C - AQS](#七juc---aqs)
+  * [CountDownLatch](#countdownlatch)
+  * [CyclicBarrier](#cyclicbarrier)
+  * [Semaphore](#semaphore)
+* [八、J.U.C - 其它组件](#八juc---其它组件)
+  * [FutureTask](#futuretask)
+  * [BlockingQueue](#blockingqueue)
+  * [ForkJoin](#forkjoin)
+* [九、线程不安全示例](#九线程不安全示例)
+* [十、Java 内存模型](#十java-内存模型)
+  * [主内存与工作内存](#主内存与工作内存)
+  * [内存间交互操作](#内存间交互操作)
+  * [内存模型三大特性](#内存模型三大特性)
+  * [先行发生原则](#先行发生原则)
+* [十一、线程安全](#十一线程安全)
+  * [不可变](#不可变)
+  * [互斥同步](#互斥同步)
+  * [非阻塞同步](#非阻塞同步)
+  * [无同步方案](#无同步方案)
+* [十二、锁优化](#十二锁优化)
+  * [自旋锁](#自旋锁)
+  * [锁消除](#锁消除)
+  * [锁粗化](#锁粗化)
+  * [轻量级锁](#轻量级锁)
+  * [偏向锁](#偏向锁)
+
 <!-- GFM-TOC -->
 
 ## 并发简介
+
 ### 多核处理器的发展
+
 处理器很难再提高主频，取而代之放置更多的处理器内核。
 
 ### 进程、线程
+
 进程是资源分配的基本单位，线程是独立调度的基本单位。
 
 ### 线程优点
 
- - 充分使用多处理器，利用空闲处理器提高吞吐量；
- - 简化模型设计，如http请求响应
- - 异步事件处理
- - 用户界面更快的响应性
+- 充分使用多处理器，利用空闲处理器提高吞吐量；
+- 简化模型设计，如http请求响应
+- 异步事件处理
+- 用户界面更快的响应性
 
 ### 线程风险
 
- - 多线程中的各个操作顺序不可预测
- - 活跃度危险，死锁、活锁、饥饿
- - 上下文切换、同步机制带来的性能影响
+- 多线程中的各个操作顺序不可预测
+- 活跃度危险，死锁、活锁、饥饿
+- 上下文切换、同步机制带来的性能影响
 
 ## 一、使用线程
 
@@ -412,7 +418,6 @@ public static void main(String[] args) {
 0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9
 ```
 
-
 **2. 同步一个方法**
 
 ```java
@@ -506,7 +511,6 @@ public static void main(String[] args) {
 ```html
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9
 ```
-
 
 ### 比较
 
@@ -720,23 +724,25 @@ after
 
 阻塞和等待的区别在于，阻塞是被动的，它是在等待获取 monitor lock。而等待是主动的，通过调用  Object.wait() 等方法进入。
 
-| 进入方法 | 退出方法 |
-| --- | --- |
+
+| 进入方法                                   | 退出方法                             |
+| -------------------------------------------- | -------------------------------------- |
 | 没有设置 Timeout 参数的 Object.wait() 方法 | Object.notify() / Object.notifyAll() |
-| 没有设置 Timeout 参数的 Thread.join() 方法 | 被调用的线程执行完毕 |
-| LockSupport.park() 方法 | LockSupport.unpark(Thread) |
+| 没有设置 Timeout 参数的 Thread.join() 方法 | 被调用的线程执行完毕                 |
+| LockSupport.park() 方法                    | LockSupport.unpark(Thread)           |
 
 ### 限期等待（TIMED_WAITING）
 
 无需等待其它线程显式地唤醒，在一定时间之后会被系统自动唤醒。
 
-| 进入方法 | 退出方法 |
-| --- | --- |
-| Thread.sleep() 方法 | 时间结束 |
-| 设置了 Timeout 参数的 Object.wait() 方法 | 时间结束 / Object.notify() / Object.notifyAll()  |
-| 设置了 Timeout 参数的 Thread.join() 方法 | 时间结束 / 被调用的线程执行完毕 |
-| LockSupport.parkNanos() 方法 | LockSupport.unpark(Thread) |
-| LockSupport.parkUntil() 方法 | LockSupport.unpark(Thread) |
+
+| 进入方法                                 | 退出方法                                        |
+| ------------------------------------------ | ------------------------------------------------- |
+| Thread.sleep() 方法                      | 时间结束                                        |
+| 设置了 Timeout 参数的 Object.wait() 方法 | 时间结束 / Object.notify() / Object.notifyAll() |
+| 设置了 Timeout 参数的 Thread.join() 方法 | 时间结束 / 被调用的线程执行完毕                 |
+| LockSupport.parkNanos() 方法             | LockSupport.unpark(Thread)                      |
+| LockSupport.parkUntil() 方法             | LockSupport.unpark(Thread)                      |
 
 调用 Thread.sleep() 方法使线程进入限期等待状态时，常常用“使一个线程睡眠”进行描述。调用 Object.wait() 方法使线程进入限期等待或者无限期等待时，常常用“挂起一个线程”进行描述。睡眠和挂起是用来描述行为，而阻塞和等待用来描述状态。
 
@@ -927,8 +933,8 @@ other task is running...
 
 java.util.concurrent.BlockingQueue 接口有以下阻塞队列的实现：
 
--   **FIFO 队列**  ：LinkedBlockingQueue、ArrayBlockingQueue（固定长度）
--   **优先级队列**  ：PriorityBlockingQueue
+- **FIFO 队列**  ：LinkedBlockingQueue、ArrayBlockingQueue（固定长度）
+- **优先级队列**  ：PriorityBlockingQueue
 
 提供了阻塞的 take() 和 put() 方法：如果队列为空 take() 将阻塞，直到队列中有内容；如果队列为满 put() 将阻塞，直到队列有空闲位置。
 
